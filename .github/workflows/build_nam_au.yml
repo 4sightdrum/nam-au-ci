@@ -23,8 +23,7 @@ jobs:
 
       - name: Build with Xcode
         working-directory: NeuralAmpModelerPlugin
-        run: |
-    xcodebuild -project NeuralAmpModeler/projects/NeuralAmpModeler-macOS.xcodeproj -configuration Release -scheme macOS-AUv2 -derivedDataPath build
+        run: xcodebuild -project NeuralAmpModeler/projects/NeuralAmpModeler-macOS.xcodeproj -configuration Release -scheme macOS-AUv2 -derivedDataPath buildd
 
       - name: Find AU component
         id: find_au
