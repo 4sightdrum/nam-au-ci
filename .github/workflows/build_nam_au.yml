@@ -21,16 +21,11 @@ jobs:
           cd NeuralAmpModelerPlugin
           git submodule update --init --recursive
 
-      - name: Build with Xcode
+      - name: Build AU (unsigned)
         working-directory: NeuralAmpModelerPlugin
-          env:
-    CODE_SIGNING_ALLOWED: "NO"
-    CODE_SIGNING_REQUIRED: "NO"
-    CODE_SIGN_IDENTITY: ""
-    PROVISIONING_PROFILE_SPECIFIER: ""
-    ENABLE_HARDENED_RUNTIME: "NO"
-
-        run: xcodebuild -project NeuralAmpModeler/projects/NeuralAmpModeler-macOS.xcodeproj -configuration Release -scheme macOS-AUv2 -derivedDataPath buildd
+        run: |
+          CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" PROVISIONING_PROFILE_SPECIFIER="" ENABLE_HARDENED_RUNTIME=NO \
+          xcodebuild -project NeuralAmpModeler/projects/NeuralAmpModeler-macOS.xcodeproj -configuration Release -scheme macOS-AUv2 -derivedDataPath build
 
       - name: Find AU component
         id: find_au
