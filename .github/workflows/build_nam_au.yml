@@ -21,27 +21,22 @@ jobs:
           cd NeuralAmpModelerPlugin
           git submodule update --init --recursive
 
-      - name: Configure
+      - name: Build with Xcode
         working-directory: NeuralAmpModelerPlugin
         run: |
-          cmake -S . -B build -G Ninja -DNeuralAmpModeler_BUILD_AU=ON -DNeuralAmpModeler_BUILD_VST3=OFF -DCMAKE_POLICY_DEFAULT_CMP0042=NEW
-
-      - name: Build
-        working-directory: NeuralAmpModelerPlugin
-        run: ninja -C build
+          xcodebuild -project NeuralAmpModeler/projects/NeuralAmpModeler-macOS.xcodeproj -configuration Release -scheme NeuralAmpModeler -derivedDataPath build
 
       - name: Find AU component
         id: find_au
-        working-directory: NeuralAmpModelerPlugin/build
+        working-directory: NeuralAmpModelerPlugin
         run: |
-          set -e
-          ARTIFACT_PATH=$(find . -name NeuralAmpModeler.component -type d -print -quit)
-          echo "artifact=$ARTIFACT_PATH" >> $GITHUB_OUTPUT
+          ARTIFACT_PATH=$(find build/Build/Products/Release -name NeuralAmpModeler.component -type d -print -quit)
+          echo "artifact=$ARTIFACT_PATH" >> "$GITHUB_OUTPUT"
 
       - name: Upload AU artifact
         if: steps.find_au.outputs.artifact != ''
         uses: actions/upload-artifact@v4
         with:
           name: NeuralAmpModeler_AU
-          path: NeuralAmpModelerPlugin/build/${{ steps.find_au.outputs.artifact }}
+          path: NeuralAmpModelerPlugin/${{ steps.find_au.outputs.artifact }}
           if-no-files-found: error
