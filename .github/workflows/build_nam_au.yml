@@ -13,7 +13,7 @@ jobs:
       - name: Install tools
         run: |
           brew update
-          brew install cmake ninja pkg-config
+          brew install ninja pkg-config
 
       - name: Clone NeuralAmpModelerPlugin (fresh with submodules)
         run: |
