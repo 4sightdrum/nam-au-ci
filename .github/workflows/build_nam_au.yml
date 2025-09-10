@@ -7,7 +7,7 @@ jobs:
   build-au:
     runs-on: macos-14
     steps:
-      - name: Checkout orchestrator repo
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Install tools
@@ -25,16 +25,19 @@ jobs:
         working-directory: NeuralAmpModelerPlugin
         run: |
           CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" PROVISIONING_PROFILE_SPECIFIER="" ENABLE_HARDENED_RUNTIME=NO \
-          xcodebuild -project NeuralAmpModeler/projects/NeuralAmpModeler-macOS.xcodeproj -configuration Release -scheme macOS-AUv2 -derivedDataPath build
+          xcodebuild -project NeuralAmpModeler/projects/NeuralAmpModeler-macOS.xcodeproj \
+                     -scheme macOS-AUv2 \
+                     -configuration Release \
+                     -derivedDataPath build
 
-      - name: Find AU component
+      - name: Find AU
         id: find_au
         working-directory: NeuralAmpModelerPlugin
         run: |
-          ARTIFACT_PATH=$(find build/Build/Products/Release -name NeuralAmpModeler.component -type d -print -quit)
-          echo "artifact=$ARTIFACT_PATH" >> "$GITHUB_OUTPUT"
+          ART=$(find build/Build/Products/Release -name NeuralAmpModeler.component -type d -print -quit)
+          echo "artifact=$ART" >> $GITHUB_OUTPUT
 
-      - name: Upload AU artifact
+      - name: Upload AU
         if: steps.find_au.outputs.artifact != ''
         uses: actions/upload-artifact@v4
         with:
